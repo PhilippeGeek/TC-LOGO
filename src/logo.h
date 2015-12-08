@@ -2,12 +2,16 @@
 // Created by pvienne on 05/12/15.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
 #ifndef TP_LOGO_LOGO_H
 #define TP_LOGO_LOGO_H
 #define _FORWARD 0
 #define _LEFT 1
 #define _RIGHT 2
 #define _REPEAT 3
+#define _INTEGER 4
+#define _UNKNOWN 5
 
 typedef struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
@@ -37,3 +41,5 @@ NODE* add_repeat_node(NODE *repeat_node, NODE *node);
 void free_prog(PROG program);
 
 #endif //TP_LOGO_LOGO_H
+
+#pragma clang diagnostic pop
