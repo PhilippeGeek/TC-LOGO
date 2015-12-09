@@ -3,13 +3,13 @@ project(TP_LOGO)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-SET(BisonOutput ${CMAKE_SOURCE_DIR}/src/logo.bison.c)
+SET(BisonOutput ${CMAKE_SOURCE_DIR}/src/logo.tab.c)
 FIND_PACKAGE(BISON REQUIRED)
 IF(BISON_FOUND)
     ADD_CUSTOM_COMMAND(
             SOURCE ${CMAKE_SOURCE_DIR}/src/logo.y
             COMMAND ${BISON_EXECUTABLE}
-            ARGS --defines=${CMAKE_SOURCE_DIR}/src/tokens.h
+            ARGS --defines=${CMAKE_SOURCE_DIR}/src/logo.tab.h
             -o ${BisonOutput}
             ${CMAKE_SOURCE_DIR}/src/logo.y
             COMMENT "Generating parser.c"
@@ -17,7 +17,7 @@ IF(BISON_FOUND)
     )
 ENDIF(BISON_FOUND)
 FIND_PACKAGE(FLEX REQUIRED)
-SET(FlexOutput ${CMAKE_SOURCE_DIR}/src/logo.flex.c)
+SET(FlexOutput ${CMAKE_SOURCE_DIR}/src/logo.yy.c)
 IF(FLEX_FOUND)
     ADD_CUSTOM_COMMAND(
             OUTPUT ${FlexOutput}

@@ -10,19 +10,22 @@ LIBS=
 _TST_LOGO = logo.o test_logo.o
 TST_LOGO = $(patsubst %,$(ODIR)/%,$(_TST_LOGO))
 
-_TST_LEX = logo.o logo.bison.o logo.flex.o
+_TST_LEX = logo.o logo.tab.o logo.yy.o
 TST_LEX = $(patsubst %,$(ODIR)/%,$(_TST_LEX))
+
+all: clean $(BDIR)/test_logo $(BDIR)/test_lexer
+	$(BDIR)/test_logo
 
 $(ODIR)/%.o: $(SDIR)/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(SDIR)/logo.flex.c: $(SDIR)/logo.l $(SDIR)/tokens.h
+$(SDIR)/logo.yy.c: $(SDIR)/logo.l $(SDIR)/logo.tab.h
 	flex -o $@ $<
 
-$(SDIR)/logo.bison.c: $(SDIR)/logo.y
-	bison --defines=$(SDIR)/tokens.h -o $@ $<
+$(SDIR)/logo.tab.c: $(SDIR)/logo.y
+	bison --defines=$(SDIR)/logo.tab.h -o $@ $<
 
-$(SDIR)/tokens.h: $(SDIR)/logo.bison.c
+$(SDIR)/logo.tab.h: $(SDIR)/logo.tab.c
 
 $(BDIR)/test_logo: $(TST_LOGO)
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
@@ -35,4 +38,4 @@ $(BDIR)/test_lexer: $(TST_LEX)
 clean:
 	rm -f $(ODIR)/*.o
 	rm -rf $(BDIR)/*
-	rm src/*.bison.c src/*.flex.c src/tokens.h
+	rm -f src/*.tab.c src/*.yy.c src/logo.tab.h

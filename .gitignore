@@ -12,9 +12,9 @@ bin/*
 # Precompiled Headers
 *.gch
 *.pch
-*.flex.c
-*.bison.c
-src/tokens.h
+*.yy.c
+*.tab.c
+src/logo.tab.h
 
 # Libraries
 *.lib

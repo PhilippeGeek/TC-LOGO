@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
-#include "tokens.h"
+#include "logo.tab.h"
 %}
 %option noyywrap
 %%
