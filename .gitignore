@@ -7,10 +7,14 @@
 *.ko
 *.obj
 *.elf
+bin/*
 
 # Precompiled Headers
 *.gch
 *.pch
+*.flex.c
+*.bison.c
+src/tokens.h
 
 # Libraries
 *.lib
@@ -40,7 +44,6 @@
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
-Makefile
 cmake_install.cmake
 install_manifest.txt
 

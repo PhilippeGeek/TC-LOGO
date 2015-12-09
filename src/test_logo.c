@@ -2,7 +2,7 @@
 // Created by pvienne on 05/12/15.
 //
 
-#include "../src/logo.h"
+#include "logo.h"
 
 int main(){
     PROG test_prog = create_forward(100);
