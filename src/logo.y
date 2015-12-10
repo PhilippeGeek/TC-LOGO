@@ -1,24 +1,37 @@
 %{
 #include <stdio.h>
+#include "logo.h"
 int yyparse();
 int yylex();
 int yyerror(char *s);
+PROG instruction;
+int currentNodeType;
 %}
 
+%code requires {
+    #include "logo.h"
+}
+
 %union {
-           int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
-           int value;
-       }
-%token LEFT RIGHT FORWARD REPEAT integer
+  NODE* tVal;
+  int iVal;
+  }
+
+%token LEFT RIGHT FORWARD REPEAT BRACKETS
+%type <tVal> INST PROG
+%type <iVal> VALUE
+%token <iVal> integer
 
 %%
 
-PROG : INST | PROG INST { printf("Un programme!\n"); }
-INST: FORWARD VALUE |
-      LEFT VALUE |
-      RIGHT VALUE |
-      REPEAT VALUE '[' PROG ']'  { printf("Un programme!\n"); }
-VALUE: integer
+PROG :
+    INST { $$ = $1; if(instruction == NULL) instruction = $$; }
+    | PROG INST { add_node($1, $2); $$ = $1; }
+INST: FORWARD VALUE { $$ = create_forward($2); }
+    | LEFT VALUE { $$ = create_left($2); }
+    | RIGHT VALUE { $$ = create_right($2); }
+    | REPEAT VALUE BRACKETS PROG BRACKETS  { $$ = create_repeat($2, $4); }
+VALUE: integer { $$=$1; }
 
 %%
 
@@ -29,5 +42,6 @@ int yyerror(char *s) {
 
 int main(void) {
 	yyparse();
+	print_logo(instruction, 0, 2);
 	return 0;
 }

@@ -7,6 +7,9 @@ BDIR=bin
 
 LIBS=
 
+%.c: %.y
+%.c: %.l
+
 _TST_LOGO = logo.o test_logo.o
 TST_LOGO = $(patsubst %,$(ODIR)/%,$(_TST_LOGO))
 
@@ -20,10 +23,10 @@ $(ODIR)/%.o: $(SDIR)/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(SDIR)/logo.yy.c: $(SDIR)/logo.l $(SDIR)/logo.tab.h
-	flex -o $@ $<
+	flex -o $@ $^
 
 $(SDIR)/logo.tab.c: $(SDIR)/logo.y
-	bison --defines=$(SDIR)/logo.tab.h -o $@ $<
+	bison -d --defines=$(SDIR)/logo.tab.h -o $@ $^
 
 $(SDIR)/logo.tab.h: $(SDIR)/logo.tab.c
 
