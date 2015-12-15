@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.3)
 project(TP_LOGO)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 SET(BisonOutput ${CMAKE_SOURCE_DIR}/src/logo.tab.c)
 FIND_PACKAGE(BISON REQUIRED)
 IF(BISON_FOUND)
@@ -30,4 +29,5 @@ ENDIF()
 
 set(SOURCE_FILES main.cpp)
 add_executable(test-logo src/logo.c src/logo.h src/test_logo.c)
+TARGET_LINK_LIBRARIES(test-logo m)
 add_executable(test-lexic ${FlexOutput} ${BisonOutput})

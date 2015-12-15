@@ -15,16 +15,16 @@ void print_logo(NODE *cur, int ind_level, int ind_size) {
         }
         switch (cur->instruction) {
             case 0:
-                printf("FORWARD %d\n", cur->value);
+                printf("FORWARD %lf\n", cur->value);
                 break;
             case 1:
-                printf("LEFT %d\n", cur->value);
+                printf("LEFT %lf\n", cur->value);
                 break;
             case 2:
-                printf("RIGHT %d\n", cur->value);
+                printf("RIGHT %lf\n", cur->value);
                 break;
             case 3:
-                printf("REPEAT %d [\n", cur->value);
+                printf("REPEAT %lf [\n", cur->value);
                 print_logo(cur->subset, ind_level + 1, ind_size);
                 printf("]\n");
                 break;
@@ -34,7 +34,7 @@ void print_logo(NODE *cur, int ind_level, int ind_size) {
     }
 }
 
-NODE *create_node(int type, int value, PROG subset) {
+NODE *create_node(int type, double value, PROG subset) {
     NODE *node = malloc(sizeof(NODE));
     node->value = value;
     node->instruction = type;
@@ -43,15 +43,15 @@ NODE *create_node(int type, int value, PROG subset) {
     return node;
 }
 
-NODE *create_forward(int value) {
+NODE *create_forward(double value) {
     return create_node(_FORWARD, value, NULL);
 }
 
-NODE *create_left(int value) {
+NODE *create_left(double value) {
     return create_node(_LEFT, value, NULL);
 }
 
-NODE *create_right(int value) {
+NODE *create_right(double value) {
     return create_node(_RIGHT, value, NULL);
 }
 
@@ -121,8 +121,8 @@ void print_node(NODE* node, VECTOR v, FILE* out){
     switch (node->instruction) {
         case _FORWARD:
             next = (*v);
-            next.y += node->value * 10 * sin(v->angle);
-            next.x += node->value * 10 * cos(v->angle);
+            next.y += node->value * sin(M_PI * v->angle/180.0);
+            next.x += node->value * cos(M_PI * v->angle/180.0);
             fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n", v->x, v->y, next.x, next.y);
             *v = next;
             break;

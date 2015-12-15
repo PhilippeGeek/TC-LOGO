@@ -17,7 +17,7 @@
 
 typedef struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
-    int value;
+    double value;
     struct NODE *next;
     struct NODE *subset;
 } NODE;
@@ -38,13 +38,13 @@ void print_svg(NODE *cur);
 
 void print_node(NODE* node, VECTOR v, FILE* out);
 
-NODE *create_node(int type, int value, PROG subset);
+NODE *create_node(int type, double value, PROG subset);
 
-NODE *create_forward(int value);
+NODE *create_forward(double value);
 
-NODE *create_left(int value);
+NODE *create_left(double value);
 
-NODE *create_right(int value);
+NODE *create_right(double value);
 
 NODE *create_repeat(int times, PROG prog_to_repeat);
 
