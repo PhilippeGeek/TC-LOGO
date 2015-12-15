@@ -12,8 +12,8 @@ int main(){
     add_node(rep_prog, create_left(1));
     NODE* rep_node = create_repeat(360, rep_prog);
     add_node(test_prog, rep_node);
-    //print_logo(test_prog, 0, 2);
-    print_svg(test_prog);
+    print_logo(test_prog, 0, 2);
+    //print_svg(test_prog);
     free_prog(test_prog);
     return 0;
 }

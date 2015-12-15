@@ -15,12 +15,13 @@ int currentNodeType;
 %union {
   NODE* tVal;
   int iVal;
+  double dVal;
   }
 
 %token LEFT RIGHT FORWARD REPEAT BRACKETS
 %type <tVal> INST PROG
-%type <iVal> VALUE
-%token <iVal> integer
+%type <dVal> VALUE
+%token <dVal> integer
 
 %%
 
