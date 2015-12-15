@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "logo.h"
 
 void print_logo(NODE *cur, int ind_level, int ind_size) {
@@ -95,4 +96,52 @@ void free_prog(PROG program) {
         parent->next = NULL;
     free(program);
     free_prog(parent);
+}
+
+void print_svg(NODE *program){
+    fprintf(stdout,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+                   "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"300\" height=\"200\">\n"
+                   "  <title>Sortie d'un programme Logo</title>\n");
+    VECTOR v = malloc(sizeof(struct vect));
+    v->angle = 0;
+    v->x=0;
+    v->y=0;
+    while(program!=NULL){
+        print_node(program, v, stdout);
+        program = program->next;
+    }
+    fprintf(stdout,"\n</svg>\n");
+}
+
+void print_node(NODE* node, VECTOR v, FILE* out){
+    if(node == NULL) return;
+    struct vect next;
+    PROG subprog;
+    int i;
+    switch (node->instruction) {
+        case _FORWARD:
+            next = (*v);
+            next.y += node->value * 10 * sin(v->angle);
+            next.x += node->value * 10 * cos(v->angle);
+            fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n", v->x, v->y, next.x, next.y);
+            *v = next;
+            break;
+        case _LEFT:
+            v->angle+=node->value;
+            break;
+        case _RIGHT:
+            v->angle+=node->value;
+            break;
+        case _REPEAT:
+            subprog = node->subset;
+            for (i = 0; i < node->value; ++i) {
+                NODE* current = subprog;
+                while(current!=NULL){
+                    print_node(current, v, stdout);
+                    current = current->next;
+                }
+            }
+            break;
+        default:break;
+    }
 }

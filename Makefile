@@ -5,7 +5,7 @@ CFLAGS=
 ODIR=obj
 BDIR=bin
 
-LIBS=
+LIBS=-lm
 
 %.c: %.y
 %.c: %.l

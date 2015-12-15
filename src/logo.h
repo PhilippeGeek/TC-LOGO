@@ -13,6 +13,8 @@
 #define _INTEGER 4
 #define _UNKNOWN 5
 
+#include <stdio.h>
+
 typedef struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
     int value;
@@ -22,7 +24,19 @@ typedef struct NODE {
 
 typedef NODE* PROG;
 
+typedef struct vect {
+    double x;
+    double y;
+    double angle;
+} vect;
+
+typedef struct vect* VECTOR;
+
 void print_logo(NODE *cur, int ind_level, int ind_size);
+
+void print_svg(NODE *cur);
+
+void print_node(NODE* node, VECTOR v, FILE* out);
 
 NODE *create_node(int type, int value, PROG subset);
 

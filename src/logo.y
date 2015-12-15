@@ -42,6 +42,6 @@ int yyerror(char *s) {
 
 int main(void) {
 	yyparse();
-	print_logo(instruction, 0, 2);
+	print_svg(instruction);
 	return 0;
 }
