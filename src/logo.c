@@ -43,6 +43,18 @@ NODE *create_node(int type, double value, PROG subset) {
     return node;
 }
 
+NODE *create_pen_change() {
+    return create_node(_PEN_CHANGE, 0, NULL);
+}
+
+NODE *create_pen_up() {
+    return create_node(_PEN_UP, 0, NULL);
+}
+
+NODE *create_pen_down() {
+    return create_node(_PEN_DOWN, 0, NULL);
+}
+
 NODE *create_forward(double value) {
     return create_node(_FORWARD, value, NULL);
 }
@@ -106,6 +118,7 @@ void print_svg(NODE *program){
     v->angle = 0;
     v->x=0;
     v->y=0;
+    v->pen_down=true;
     while(program!=NULL){
         print_node(program, v, stdout);
         program = program->next;
@@ -123,14 +136,24 @@ void print_node(NODE* node, VECTOR v, FILE* out){
             next = (*v);
             next.y += node->value * sin(M_PI * v->angle/180.0);
             next.x += node->value * cos(M_PI * v->angle/180.0);
-            fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n", v->x, v->y, next.x, next.y);
+            if(v->pen_down)
+                fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n", v->x, v->y, next.x, next.y);
             *v = next;
             break;
         case _LEFT:
-            v->angle+=node->value;
+            v->angle-=node->value;
             break;
         case _RIGHT:
             v->angle+=node->value;
+            break;
+        case _PEN_UP:
+            v->pen_down = false;
+            break;
+        case _PEN_DOWN:
+            v->pen_down = true;
+            break;
+        case _PEN_CHANGE:
+            v->pen_down = !(v->pen_down);
             break;
         case _REPEAT:
             subprog = node->subset;

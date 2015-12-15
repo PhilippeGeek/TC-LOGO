@@ -18,7 +18,7 @@ int currentNodeType;
   double dVal;
   }
 
-%token LEFT RIGHT FORWARD REPEAT BRACKETS
+%token LEFT RIGHT FORWARD REPEAT BRACKETS PEN_UP PEN_DOWN PEN_CHANGE
 %type <tVal> INST PROG
 %type <dVal> VALUE
 %token <dVal> integer
@@ -32,6 +32,9 @@ INST: FORWARD VALUE { $$ = create_forward($2); }
     | LEFT VALUE { $$ = create_left($2); }
     | RIGHT VALUE { $$ = create_right($2); }
     | REPEAT VALUE BRACKETS PROG BRACKETS  { $$ = create_repeat($2, $4); }
+    | PEN_UP { $$ = create_pen_up(); }
+    | PEN_DOWN { $$ = create_pen_down(); }
+    | PEN_CHANGE { $$ = create_pen_change(); }
 VALUE: integer { $$=$1; }
 
 %%

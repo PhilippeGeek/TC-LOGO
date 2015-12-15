@@ -12,8 +12,12 @@
 #define _REPEAT 3
 #define _INTEGER 4
 #define _UNKNOWN 5
+#define _PEN_UP 6
+#define _PEN_DOWN 7
+#define _PEN_CHANGE 8
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
@@ -28,6 +32,7 @@ typedef struct vect {
     double x;
     double y;
     double angle;
+    bool pen_down;
 } vect;
 
 typedef struct vect* VECTOR;
@@ -37,6 +42,12 @@ void print_logo(NODE *cur, int ind_level, int ind_size);
 void print_svg(NODE *cur);
 
 void print_node(NODE* node, VECTOR v, FILE* out);
+
+NODE *create_pen_change();
+
+NODE *create_pen_down();
+
+NODE *create_pen_up();
 
 NODE *create_node(int type, double value, PROG subset);
 
