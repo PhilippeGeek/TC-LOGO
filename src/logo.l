@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "logo.tab.h"
 #include "logo.h"
-#define YYSTYPE double
+
 %}
 %option noyywrap
 %%
