@@ -28,6 +28,9 @@ src/logo.tab.h
 *.so.*
 *.dylib
 
+# test result files
+tst/*.svg
+
 # Executables
 *.exe
 *.out

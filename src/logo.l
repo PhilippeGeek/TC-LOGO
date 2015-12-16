@@ -15,7 +15,6 @@ REPEAT|Repeat|repeat	return REPEAT;
 PU|pu|PEN_UP|Pen_Up|pen_up	return PEN_UP;
 PD|pd|PEN_DOWN|Pen_Down|pen_down	return PEN_DOWN;
 PS|ps|PEN_SWITCH|Pen_Switch|pen_switch	return PEN_CHANGE;
-REPEAT|Repeat|repeat	return REPEAT;
 \[|\]			return BRACKETS;
 [0-9]+  		{ yylval.dVal=strtod(yytext, NULL); return integer; }
 [0-9]+\.[0-9]+ 		{ yylval.dVal=strtod(yytext, NULL); return integer; }

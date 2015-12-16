@@ -6,6 +6,7 @@ ODIR=obj
 BDIR=bin
 
 LIBS=-lm
+TESTS=tst/BASIC.logo tst/FLOAT.logo tst/PEN.logo
 
 %.c: %.y
 %.c: %.l
@@ -17,28 +18,47 @@ _TST_LEX = logo.o logo.tab.o logo.yy.o
 TST_LEX = $(patsubst %,$(ODIR)/%,$(_TST_LEX))
 
 all: clean $(BDIR)/test_logo $(BDIR)/test_lexer
-	$(BDIR)/test_logo
+	@$(BDIR)/test_logo
 
 $(ODIR)/%.o: $(SDIR)/%.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	@echo -n 'Compiling $< ...'
+	@$(CC) -c -o $@ $< $(CFLAGS)
+	@echo ' Done'
 
 $(SDIR)/logo.yy.c: $(SDIR)/logo.l $(SDIR)/logo.tab.h
-	flex -o $@ $^
+	@echo -n 'Flexify our conditions ...'
+	@flex -o $@ $^
+	@echo ' Done'
 
 $(SDIR)/logo.tab.c: $(SDIR)/logo.y
-	bison -d --defines=$(SDIR)/logo.tab.h -o $@ $^
+	@echo -n 'A bison is running ...'
+	@bison -d --defines=$(SDIR)/logo.tab.h -o $@ $^
+	@echo ' Done'
 
 $(SDIR)/logo.tab.h: $(SDIR)/logo.tab.c
 
 $(BDIR)/test_logo: $(TST_LOGO)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	@echo -n 'Link all for a little test ! ...'
+	@gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	@echo ' Created'
 
 $(BDIR)/test_lexer: $(TST_LEX)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	@echo -n 'Link all for a Lexer ! ...'
+	@gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	@echo ' Created'
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o
-	rm -rf $(BDIR)/*
-	rm -f src/*.tab.c src/*.yy.c src/logo.tab.h
+	@rm -f $(ODIR)/*.o
+	@rm -rf $(BDIR)/*
+	@rm -f src/*.tab.c src/*.yy.c src/logo.tab.h
+	@rm -f tst/*.svg
+
+test: clean $(BDIR)/test_lexer
+	@ echo -n "Testing "
+	@ for i in $(TESTS); do \
+	    echo -n '.';\
+	    $(BDIR)/test_lexer < $$i > $$i.svg;\
+	done
+	@ echo '  Ended !'

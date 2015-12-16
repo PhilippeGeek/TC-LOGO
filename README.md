@@ -18,6 +18,6 @@ navigate in the program. After representation, the compiler writes the SVG on th
 
 &copy; 2015 Philippe VIENNE
 
-### Notice if you are in INSA Lyon - TC departement
+### Notice if you are in INSA Lyon - TC department
 My work is under GNU GPL V3. So if you are currently in TC, you can use it but you have to write down that the code comes
 from Philippe VIENNE ; teachers will surely not agree.
