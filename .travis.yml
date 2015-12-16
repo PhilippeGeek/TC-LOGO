@@ -1,0 +1,16 @@
+language: c
+compiler:
+  - clang
+  - gcc
+install:
+  - sudo apt-get -qq install bison flex make gcc
+script:
+  - make test
+after_script:
+  - make clean
+notifications:
+  email:
+    recipients:
+     - philippe.vienne@insa-lyon.fr
+    on_success: change
+    on_failure: always
