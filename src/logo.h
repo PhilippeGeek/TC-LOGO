@@ -65,6 +65,8 @@ NODE* add_repeat_node(NODE *repeat_node, NODE *node);
 
 void free_prog(PROG program);
 
+void compute_max_point(NODE* node, VECTOR v, VECTOR max);
+
 #endif //TP_LOGO_LOGO_H
 
 #pragma clang diagnostic pop

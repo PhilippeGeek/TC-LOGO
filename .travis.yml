@@ -1,6 +1,5 @@
 language: c
 compiler:
-  - clang
   - gcc
 install:
   - sudo apt-get -qq install bison flex make gcc

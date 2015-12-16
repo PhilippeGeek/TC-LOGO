@@ -111,13 +111,31 @@ void free_prog(PROG program) {
 }
 
 void print_svg(NODE *program){
-    fprintf(stdout,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                   "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"300\" height=\"200\">\n"
-                   "  <title>Sortie d'un programme Logo</title>\n");
     VECTOR v = malloc(sizeof(struct vect));
     v->angle = 0;
     v->x=0;
     v->y=0;
+    v->pen_down=true;
+
+    VECTOR max = malloc(sizeof(struct vect));
+    max->angle = 0;
+    max->x=0;
+    max->y=0;
+    max->pen_down=true;
+
+    NODE* p = program;
+
+    while(p!=NULL){
+        compute_max_point(p, v,max);
+        p = p->next;
+    }
+
+    fprintf(stdout,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+                   "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">\n"
+                   "  <title>Sortie d'un programme Logo</title>\n", ((int)max->x) + 11, ((int)max->y) + 11);
+    v->angle = 0;
+    v->x=5.0;
+    v->y=5.0;
     v->pen_down=true;
     while(program!=NULL){
         print_node(program, v, stdout);
@@ -161,6 +179,49 @@ void print_node(NODE* node, VECTOR v, FILE* out){
                 NODE* current = subprog;
                 while(current!=NULL){
                     print_node(current, v, stdout);
+                    current = current->next;
+                }
+            }
+            break;
+        default:break;
+    }
+}
+
+void compute_max_point(NODE* node, VECTOR v, VECTOR max){
+    if(node == NULL) return;
+    struct vect next;
+    PROG subprog;
+    int i;
+    switch (node->instruction) {
+        case _FORWARD:
+            next = (*v);
+            next.y += node->value * sin(M_PI * v->angle/180.0);
+            next.x += node->value * cos(M_PI * v->angle/180.0);
+            max->x = max->x < next.x ? next.x : max->x;
+            max->y = max->y < next.y ? next.y : max->y;
+            *v = next;
+            break;
+        case _LEFT:
+            v->angle-=node->value;
+            break;
+        case _RIGHT:
+            v->angle+=node->value;
+            break;
+        case _PEN_UP:
+            v->pen_down = false;
+            break;
+        case _PEN_DOWN:
+            v->pen_down = true;
+            break;
+        case _PEN_CHANGE:
+            v->pen_down = !(v->pen_down);
+            break;
+        case _REPEAT:
+            subprog = node->subset;
+            for (i = 0; i < node->value; ++i) {
+                NODE* current = subprog;
+                while(current!=NULL){
+                    compute_max_point(current, v, max);
                     current = current->next;
                 }
             }
