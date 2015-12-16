@@ -1,4 +1,4 @@
-# TC-LOGO
+# TC-LOGO   [![Build Status](https://travis-ci.org/PhilippeGeek/TC-LOGO.png)](https://travis-ci.org/PhilippeGeek/TC-LOGO)
 This is a school project done in INSA Lyon. The main goal is to implement a simple LOGO compilator to SVG format.
 
 ## How it works
