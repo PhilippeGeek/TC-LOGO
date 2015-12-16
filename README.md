@@ -13,7 +13,7 @@ navigate in the program. After representation, the compiler writes the SVG on th
 - Implements macro for circle and square
 - Optimize SVG output
 
-## Licencing stuff
+## GNU GPL V3.0 (Licencing stuff)
 [![GNU GPL v3.0](http://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl.html)
 
 &copy; 2015 Philippe VIENNE
@@ -21,3 +21,6 @@ navigate in the program. After representation, the compiler writes the SVG on th
 ### Notice if you are in INSA Lyon - TC department
 My work is under GNU GPL V3. So if you are currently in TC, you can use it but you have to write down that the code comes
 from Philippe VIENNE ; teachers will surely not agree.
+
+### Other licences
+My work can also be used under the CeCILL Licence Agreement on its last version.
