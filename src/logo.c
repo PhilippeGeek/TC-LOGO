@@ -26,9 +26,30 @@ void print_logo(NODE *cur, int ind_level, int ind_size) {
             case 3:
                 printf("REPEAT %lf [\n", cur->value);
                 print_logo(cur->subset, ind_level + 1, ind_size);
+                for (i = 0; i < ind_level * ind_size; ++i) {
+                    printf(" ");
+                }
                 printf("]\n");
                 break;
-            default:break;
+            case _PEN_UP:
+                printf("PU\n");
+                break;
+            case _PEN_DOWN:
+                printf("PD\n");
+                break;
+            case _PEN_CHANGE:
+                printf("PS\n");
+                break;
+            default:
+                if(cur->subset!=NULL){
+                    printf("EXEC\n");
+                    print_logo(cur->subset, ind_level + 1, ind_size);
+                    for (i = 0; i < ind_level * ind_size; ++i) {
+                        printf(" ");
+                    }
+                    printf("END EXEC\n");
+                }
+                break;
         }
         cur = cur->next;
     }
@@ -74,7 +95,7 @@ NODE *create_repeat(int times, PROG prog_to_repeat) {
 // Assuming the program already contains at least one node
 NODE *add_node(PROG programme, NODE *node) {
     if (programme == NULL) {
-        return programme;
+        return node;
     }
 
     PROG main_node = programme;
@@ -183,7 +204,14 @@ void print_node(NODE* node, VECTOR v, FILE* out){
                 }
             }
             break;
-        default:break;
+        default:
+            subprog = node->subset;
+            NODE* current = subprog;
+            while(current!=NULL){
+                print_node(current, v, stdout);
+                current = current->next;
+            }
+            break;
     }
 }
 
