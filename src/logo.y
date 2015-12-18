@@ -26,7 +26,7 @@ int mallocatedProgs = 7;
   }
 
 %token LEFT RIGHT FORWARD REPEAT BRACKETS PEN_UP PEN_DOWN PEN_CHANGE CIRCLE BUBBLE TO END
-%type <tVal> INST PROG
+%type <tVal> INST PROG SUBPROG
 %type <dVal> VALUE
 %type <sVal> NAME
 %token <dVal> integer
@@ -67,6 +67,11 @@ PROG :
             }
         }
     }
+
+SUBPROG:
+    INST { $$ = $1; }
+    | SUBPROG INST { add_node($1, $2); }
+
 INST: FORWARD VALUE { $$ = create_forward($2); }
     | LEFT VALUE { $$ = create_left($2); }
     | CIRCLE VALUE { PROG p = create_left(1); add_node(p, create_forward($2)); $$ = create_repeat(360, p); }
@@ -76,7 +81,7 @@ INST: FORWARD VALUE { $$ = create_forward($2); }
         $$ = create_repeat(360, p);
         }
     | RIGHT VALUE { $$ = create_right($2); }
-    | REPEAT VALUE BRACKETS PROG BRACKETS  { $$ = create_repeat($2, $4); }
+    | REPEAT VALUE BRACKETS SUBPROG BRACKETS  { $$ = create_repeat($2, $4); }
     | PEN_UP { $$ = create_pen_up(); }
     | PEN_DOWN { $$ = create_pen_down(); }
     | PEN_CHANGE { $$ = create_pen_change(); }
