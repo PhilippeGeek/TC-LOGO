@@ -19,21 +19,37 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct NODE {
+struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
     double value;
     struct NODE *next;
     struct NODE *subset;
-} NODE;
-
+    void* func_call;
+};
+typedef struct NODE NODE;
 typedef NODE* PROG;
 
-typedef struct vect {
+//typedef struct FUNCTION {
+//    char* name;
+//    PROG function;
+//    int arg_count;
+//    char** arg_names;
+//} FUNCTION;
+//
+//typedef struct FUNC_CALL{
+//    struct FUNCTION function;
+//    void** args;
+//};
+
+struct vect {
     double x;
     double y;
     double angle;
     bool pen_down;
-} vect;
+    bool computing;
+    struct vect* min;
+    struct vect* max;
+};
 
 typedef struct vect* VECTOR;
 
@@ -41,7 +57,7 @@ void print_logo(NODE *cur, int ind_level, int ind_size);
 
 void print_svg(NODE *cur);
 
-void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out);
+void print_node(NODE* node, VECTOR v, FILE* out);
 
 NODE *create_pen_change();
 
@@ -64,8 +80,6 @@ NODE *add_node(PROG programme, NODE *node);
 NODE* add_repeat_node(NODE *repeat_node, NODE *node);
 
 void free_prog(PROG program);
-
-void compute_max_point(NODE* node, VECTOR v, VECTOR min, VECTOR max);
 
 #endif //TP_LOGO_LOGO_H
 

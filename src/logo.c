@@ -136,42 +136,44 @@ void print_svg(NODE *program){
     v->angle = 0;
     v->x=0;
     v->y=0;
+    v->computing=true;
     v->pen_down=true;
 
-    VECTOR max = malloc(sizeof(struct vect));
-    max->angle = 0;
-    max->x=0;
-    max->y=0;
-    max->pen_down=true;
+    v->max = malloc(sizeof(struct vect));
+    v->max->angle = 0;
+    v->max->x=0;
+    v->max->y=0;
+    v->max->pen_down=false;
 
-    VECTOR min = malloc(sizeof(struct vect));
-    min->angle = 0;
-    min->x=0;
-    min->y=0;
-    min->pen_down=true;
+    v->min = malloc(sizeof(struct vect));
+    v->min->angle = 0;
+    v->min->x=0;
+    v->min->y=0;
+    v->min->pen_down=false;
 
     NODE* p = program;
 
     while(p!=NULL){
-        compute_max_point(p, v, min, max);
+        print_node(p, v, NULL);
         p = p->next;
     }
 
     fprintf(stdout,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
                    "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">\n"
-                   "  <title>Sortie d'un programme Logo</title>\n", ((int)max->x-(int)min->x) + 11, ((int)max->y-(int)min->y) + 11);
+                   "  <title>Sortie d'un programme Logo</title>\n", ((int)v->max->x-(int)v->min->x) + 11, ((int)v->max->y-(int)v->min->y) + 11);
     v->angle = 0;
     v->x=5.0;
     v->y=5.0;
+    v->computing = false;
     v->pen_down=true;
     while(program!=NULL){
-        print_node(program, v, min, stdout);
+        print_node(program, v, stdout);
         program = program->next;
     }
     fprintf(stdout,"\n</svg>\n");
 }
 
-void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out){
+void print_node(NODE* node, VECTOR v, FILE* out){
     if(node == NULL) return;
     struct vect next;
     PROG subprog;
@@ -181,8 +183,15 @@ void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out){
             next = (*v);
             next.y += node->value * sin(M_PI * v->angle/180.0);
             next.x += node->value * cos(M_PI * v->angle/180.0);
-            if(v->pen_down)
-                fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n", v->x-init->x, v->y-init->y, next.x - init->x, next.y - init->y);
+            if(v->pen_down&&!v->computing)
+                fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n",
+                        v->x-v->min->x, v->y-v->min->y, next.x - v->min->x, next.y - v->min->y);
+            else if(v->computing){
+                v->max->x = v->max->x < next.x ? next.x : v->max->x;
+                v->max->y = v->max->y < next.y ? next.y : v->max->y;
+                v->min->x = v->min->x > next.x ? next.x : v->min->x;
+                v->min->y = v->min->y > next.y ? next.y : v->min->y;
+            }
             *v = next;
             break;
         case _LEFT:
@@ -205,7 +214,7 @@ void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out){
             for (i = 0; i < node->value; ++i) {
                 NODE* current = subprog;
                 while(current!=NULL){
-                    print_node(current, v, init, stdout);
+                    print_node(current, v, stdout);
                     current = current->next;
                 }
             }
@@ -214,59 +223,7 @@ void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out){
             subprog = node->subset;
             NODE* current = subprog;
             while(current!=NULL){
-                print_node(current, v, init, stdout);
-                current = current->next;
-            }
-            break;
-    }
-}
-
-void compute_max_point(NODE* node, VECTOR v, VECTOR min, VECTOR max){
-    if(node == NULL) return;
-    struct vect next;
-    PROG subprog;
-    int i;
-    switch (node->instruction) {
-        case _FORWARD:
-            next = (*v);
-            next.y += node->value * sin(M_PI * v->angle/180.0);
-            next.x += node->value * cos(M_PI * v->angle/180.0);
-            max->x = max->x < next.x ? next.x : max->x;
-            max->y = max->y < next.y ? next.y : max->y;
-            min->x = min->x > next.x ? next.x : min->x;
-            min->y = min->y > next.y ? next.y : min->y;
-            *v = next;
-            break;
-        case _LEFT:
-            v->angle-=node->value;
-            break;
-        case _RIGHT:
-            v->angle+=node->value;
-            break;
-        case _PEN_UP:
-            v->pen_down = false;
-            break;
-        case _PEN_DOWN:
-            v->pen_down = true;
-            break;
-        case _PEN_CHANGE:
-            v->pen_down = !(v->pen_down);
-            break;
-        case _REPEAT:
-            subprog = node->subset;
-            for (i = 0; i < node->value; ++i) {
-                NODE* current = subprog;
-                while(current!=NULL){
-                    compute_max_point(current, v, min, max);
-                    current = current->next;
-                }
-            }
-            break;
-        default:
-            subprog = node->subset;
-            NODE* current = subprog;
-            while(current!=NULL){
-                compute_max_point(current, v, min, max);
+                print_node(current, v, stdout);
                 current = current->next;
             }
             break;
