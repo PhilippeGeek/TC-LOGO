@@ -6,7 +6,7 @@ ODIR=obj
 BDIR=bin
 
 LIBS=-lm
-TESTS=tst/BASIC.logo tst/FLOAT.logo tst/PEN.logo tst/MANY-TESTS.logo
+TESTS=tst/BASIC.logo tst/FLOAT.logo tst/PEN.logo tst/MANY-TESTS.logo tst/FLOWER.logo
 
 %.c: %.y
 %.c: %.l

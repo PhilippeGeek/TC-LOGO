@@ -41,7 +41,7 @@ void print_logo(NODE *cur, int ind_level, int ind_size);
 
 void print_svg(NODE *cur);
 
-void print_node(NODE* node, VECTOR v, FILE* out);
+void print_node(NODE* node, VECTOR v, VECTOR init, FILE* out);
 
 NODE *create_pen_change();
 
@@ -65,7 +65,7 @@ NODE* add_repeat_node(NODE *repeat_node, NODE *node);
 
 void free_prog(PROG program);
 
-void compute_max_point(NODE* node, VECTOR v, VECTOR max);
+void compute_max_point(NODE* node, VECTOR v, VECTOR min, VECTOR max);
 
 #endif //TP_LOGO_LOGO_H
 
