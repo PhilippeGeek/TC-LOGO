@@ -25,7 +25,7 @@ int mallocatedProgs = 7;
   char* sVal;
   }
 
-%token LEFT RIGHT FORWARD REPEAT BRACKETS PEN_UP PEN_DOWN PEN_CHANGE CIRCLE BUBBLE TO END
+%token LEFT RIGHT FORWARD REPEAT BRACKETS PEN_UP PEN_DOWN PEN_CHANGE CIRCLE BUBBLE TO END SET_COLOR
 %type <tVal> INST PROG SUBPROG
 %type <dVal> VALUE
 %type <sVal> NAME
@@ -85,6 +85,7 @@ INST: FORWARD VALUE { $$ = create_forward($2); }
     | PEN_UP { $$ = create_pen_up(); }
     | PEN_DOWN { $$ = create_pen_down(); }
     | PEN_CHANGE { $$ = create_pen_change(); }
+    | SET_COLOR VALUE VALUE VALUE { $$ = create_set_color($2, $3, $4); }
     | TO NAME {
         // Check if we are not already storing a program
         if(currentProg!=-1){

@@ -1,4 +1,5 @@
 TO triangle
+    SETC 255 128 56
     PD
     LEFT 30
     FORWARD 25
@@ -7,6 +8,7 @@ TO triangle
     PU LEFT 120 FORWARD 25 LEFT 90
 END
 TO house
+    SETC 255 0 255
     PD
     REPEAT 4 [ FORWARD 25 LEFT 90 ]
     PU FORWARD 25 PD

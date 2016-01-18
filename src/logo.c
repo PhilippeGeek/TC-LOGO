@@ -64,6 +64,10 @@ NODE *create_node(int type, double value, PROG subset) {
     return node;
 }
 
+NODE *create_set_color(int r, int g, int b) {
+    return create_node(_SET_COLOR, (((r << 8) + g) << 8) + b, NULL);
+}
+
 NODE *create_pen_change() {
     return create_node(_PEN_CHANGE, 0, NULL);
 }
@@ -136,6 +140,7 @@ void print_svg(NODE *program){
     v->angle = 0;
     v->x=0;
     v->y=0;
+    v->color = 0;
     v->computing=true;
     v->pen_down=true;
 
@@ -184,8 +189,8 @@ void print_node(NODE* node, VECTOR v, FILE* out){
             next.y += node->value * sin(M_PI * v->angle/180.0);
             next.x += node->value * cos(M_PI * v->angle/180.0);
             if(v->pen_down&&!v->computing)
-                fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"black\"/>\n",
-                        v->x-v->min->x, v->y-v->min->y, next.x - v->min->x, next.y - v->min->y);
+                fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" stroke=\"#%06x\"/>\n",
+                        v->x - v->min->x, v->y - v->min->y, next.x - v->min->x, next.y - v->min->y, v->color);
             else if(v->computing){
                 v->max->x = v->max->x < next.x ? next.x : v->max->x;
                 v->max->y = v->max->y < next.y ? next.y : v->max->y;
@@ -208,6 +213,9 @@ void print_node(NODE* node, VECTOR v, FILE* out){
             break;
         case _PEN_CHANGE:
             v->pen_down = !(v->pen_down);
+            break;
+        case _SET_COLOR:
+            v->color = (unsigned int) node->value;
             break;
         case _REPEAT:
             subprog = node->subset;

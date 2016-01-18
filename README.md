@@ -7,10 +7,13 @@ navigate in the program. After representation, the compiler writes the SVG on th
 
 ### What can it do ?
 - Simple instructions like FORWARD, LEFT, RIGHT or REPEAT
-- Manage the pen by PU (pen up) and PD (pen down)
+- Manage the pen by `PU` (pen up) and `PD` (pen down)
+- Set the color of the pen from an RGB value `SETC <red> <green> <blue>`
+- Store little macro with the `TO <prog_name> <instructions> END`, it can be called anywhere in code with `<prog_name>` 
+command
 
 ### It can be better
-- Implements macro for circle and square
+- Add variable system to store and calculate values
 - Optimize SVG output
 
 ## GNU GPL V3.0 (Licencing stuff)

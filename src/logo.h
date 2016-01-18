@@ -15,6 +15,7 @@
 #define _PEN_UP 6
 #define _PEN_DOWN 7
 #define _PEN_CHANGE 8
+#define _SET_COLOR 9
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -45,6 +46,7 @@ struct vect {
     double x;
     double y;
     double angle;
+    unsigned int color;
     bool pen_down;
     bool computing;
     struct vect* min;
@@ -58,6 +60,8 @@ void print_logo(NODE *cur, int ind_level, int ind_size);
 void print_svg(NODE *cur);
 
 void print_node(NODE* node, VECTOR v, FILE* out);
+
+NODE *create_set_color(int r, int g, int b);
 
 NODE *create_pen_change();
 

@@ -15,6 +15,7 @@ RIGHT|rt	return RIGHT;
 REPEAT|rp	return REPEAT;
 CIRCLE		return CIRCLE;
 BUBBLE		return BUBBLE;
+SETC		return SET_COLOR;
 PU|pu		return PEN_UP;
 PD|pd		return PEN_DOWN;
 PS|ps		return PEN_CHANGE;
