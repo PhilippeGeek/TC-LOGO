@@ -5,6 +5,16 @@ This is a school project done in INSA Lyon. The main goal is to implement a simp
 The compiler uses flex and bison to parse and interprets the code. It represents it in a C struct to be able to easily 
 navigate in the program. After representation, the compiler writes the SVG on the output.
 
+### How to test and run the demo
+Simply run `make test` command and see the result in the tst folder. If there is an error or if an image is not generated
+that means there is a bug, you can report it or even correct it.
+
+This program has been tested using : 
+* Bison 3.0.4 (FSF Version)
+* Flex 2.5.35 (Apple version)
+* GCC Apple LLVM version 7.0.2 (clang-700.1.81)
+
+
 ### What can it do ?
 - Simple instructions like FORWARD, LEFT, RIGHT or REPEAT
 - Manage the pen by `PU` (pen up) and `PD` (pen down)
