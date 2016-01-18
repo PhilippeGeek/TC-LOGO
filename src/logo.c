@@ -7,6 +7,32 @@
 #include <math.h>
 #include "logo.h"
 
+double compute_var(VAR *var) {
+    if (var->op == 0) {
+        return var->value;
+    } else {
+        double left = compute_var(var->left);
+        double right = compute_var(var->right);
+        switch (var->op) {
+            case OP_MINUS:
+                return left - right;
+            case OP_DIVIDE:
+                return left / right;
+            case OP_TIMES:
+                return left * right;
+            case OP_MOD:
+                return (int) left % (int) right;
+            case OP_BIN_SHIFT:
+                return (unsigned int) left << (int) right;
+            case OP_PLUS:
+            default:
+                return left + right;
+        }
+    }
+}
+
+
+
 void print_logo(NODE *cur, int ind_level, int ind_size) {
     while (cur != NULL) {
         int i = 0;
@@ -15,16 +41,16 @@ void print_logo(NODE *cur, int ind_level, int ind_size) {
         }
         switch (cur->instruction) {
             case 0:
-                printf("FORWARD %lf\n", cur->value);
+                printf("FORWARD %lf\n", compute_var(cur->value));
                 break;
             case 1:
-                printf("LEFT %lf\n", cur->value);
+                printf("LEFT %lf\n", compute_var(cur->value));
                 break;
             case 2:
-                printf("RIGHT %lf\n", cur->value);
+                printf("RIGHT %lf\n", compute_var(cur->value));
                 break;
             case 3:
-                printf("REPEAT %lf [\n", cur->value);
+                printf("REPEAT %lf [\n", compute_var(cur->value));
                 print_logo(cur->subset, ind_level + 1, ind_size);
                 for (i = 0; i < ind_level * ind_size; ++i) {
                     printf(" ");
@@ -55,7 +81,7 @@ void print_logo(NODE *cur, int ind_level, int ind_size) {
     }
 }
 
-NODE *create_node(int type, double value, PROG subset) {
+NODE *create_node(int type, VAR *value, PROG subset) {
     NODE *node = malloc(sizeof(NODE));
     node->value = value;
     node->instruction = type;
@@ -64,7 +90,8 @@ NODE *create_node(int type, double value, PROG subset) {
     return node;
 }
 
-NODE *create_set_color(int r, int g, int b) {
+NODE *create_set_color(VAR *r, VAR *g, VAR *b) {
+
     return create_node(_SET_COLOR, (((r << 8) + g) << 8) + b, NULL);
 }
 
@@ -80,19 +107,19 @@ NODE *create_pen_down() {
     return create_node(_PEN_DOWN, 0, NULL);
 }
 
-NODE *create_forward(double value) {
+NODE *create_forward(VAR *value) {
     return create_node(_FORWARD, value, NULL);
 }
 
-NODE *create_left(double value) {
+NODE *create_left(VAR *value) {
     return create_node(_LEFT, value, NULL);
 }
 
-NODE *create_right(double value) {
+NODE *create_right(VAR *value) {
     return create_node(_RIGHT, value, NULL);
 }
 
-NODE *create_repeat(int times, PROG prog_to_repeat) {
+NODE *create_repeat(VAR *times, PROG prog_to_repeat) {
     return create_node(_REPEAT, times, prog_to_repeat);
 }
 
@@ -118,6 +145,8 @@ NODE* add_repeat_node(NODE *repeat_node, NODE *node) {
     return new_subset;
 }
 
+void free_variables(PROG program);
+
 void free_prog(PROG program) {
     if (program == NULL)
         return;
@@ -126,6 +155,7 @@ void free_prog(PROG program) {
         parent = program;
         program = program->next;
     }
+    free_variables(program);
     if (program->instruction == _REPEAT) {
         free_prog(program->subset);
     }
@@ -176,6 +206,7 @@ void print_svg(NODE *program){
         program = program->next;
     }
     fprintf(stdout,"\n</svg>\n");
+    free_prog(program);
 }
 
 void print_node(NODE* node, VECTOR v, FILE* out){

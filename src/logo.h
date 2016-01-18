@@ -20,9 +20,26 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define OP_NONE 0
+#define OP_PLUS 1
+#define OP_MINUS 2
+#define OP_TIMES 3
+#define OP_DIVIDE 4
+#define OP_BIN_SHIFT 6
+#define OP_MOD 5
+
+struct VAR {
+    double value;
+    struct VAR *left;
+    int op;
+    struct VAR *right;
+};
+
+typedef struct VAR VAR;
+
 struct NODE {
     int instruction; // May be 0 (Forward), 1 (Left), 2 (Right) or 3 (Repeat)
-    double value;
+    VAR *value;
     struct NODE *next;
     struct NODE *subset;
     void* func_call;
@@ -61,7 +78,7 @@ void print_svg(NODE *cur);
 
 void print_node(NODE* node, VECTOR v, FILE* out);
 
-NODE *create_set_color(int r, int g, int b);
+NODE *create_set_color(VAR *r, VAR *g, VAR *b);
 
 NODE *create_pen_change();
 
@@ -69,15 +86,15 @@ NODE *create_pen_down();
 
 NODE *create_pen_up();
 
-NODE *create_node(int type, double value, PROG subset);
+NODE *create_node(int type, VAR *value, PROG subset);
 
-NODE *create_forward(double value);
+NODE *create_forward(VAR *value);
 
-NODE *create_left(double value);
+NODE *create_left(VAR *value);
 
-NODE *create_right(double value);
+NODE *create_right(VAR *value);
 
-NODE *create_repeat(int times, PROG prog_to_repeat);
+NODE *create_repeat(VAR *times, PROG prog_to_repeat);
 
 NODE *add_node(PROG programme, NODE *node);
 
