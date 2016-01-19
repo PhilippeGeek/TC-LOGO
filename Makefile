@@ -1,6 +1,6 @@
 SDIR=src
 CC=gcc
-CFLAGS=
+CFLAGS=-g
 
 ODIR=obj
 BDIR=bin

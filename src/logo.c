@@ -175,6 +175,9 @@ void print_svg(NODE *program){
         print_node(program, v, stdout);
         program = program->next;
     }
+    free(v->min);
+    free(v->max);
+    free(v);
     fprintf(stdout,"\n</svg>\n");
 }
 

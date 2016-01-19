@@ -43,15 +43,12 @@ PROG :
     }
     | PROG INST {
         if(currentProg == -1){
-            if($2->instruction == -1){
-                $1 = $2;
-                add_node($1, $2);
-                $$ = $1;
-            } else if($2->instruction == -2){
+            if($2->instruction == -2){
                 $1 = instruction;
                 add_node($1, $2);
                 $$ = $1;
             } else if(instruction == NULL){
+		free_prog($1);
                 $$ = $2;
                 instruction = $$;
             } else {
@@ -60,7 +57,7 @@ PROG :
             }
         } else {
             if($2->instruction == -1){
-                $$ = *(programmes+currentProg);
+                $$ = $2;
             } else {
                 add_node($1, $2);
                 $$ = $1;
@@ -115,10 +112,15 @@ INST: FORWARD VALUE { $$ = create_forward($2); }
         }
 
         // To be sure to clear old data
+	if(*(programmes+currentProg)!=NULL)free(*(programmes+currentProg));
         *(programmes+currentProg) = create_node(-1,0.0,NULL);
 
+	if(*(prog_names+currentProg)!=NULL)free(*(prog_names+currentProg));
         // Store name for program
         *(prog_names+currentProg) = strdup($2);
+
+	free($2);
+
         $$ = *(programmes+currentProg);
     }
     | END {
@@ -158,5 +160,17 @@ int main(void) {
 	if(currentProg!=-1)
 	    yyerror("Command declaration is not ended!");
 	print_svg(instruction);
+	int i=0;
+	for(i=0; i<mallocatedProgs;i++){
+		if(*(prog_names+i)!=NULL)
+			free(*(prog_names+i));
+		if(*(programmes+i)!=NULL){
+			free_prog(*(programmes+i));
+			free(*(programmes+i));
+		}
+	}
+	free(prog_names);
+	free(programmes);
+	free_prog(instruction);
 	return 0;
 }
