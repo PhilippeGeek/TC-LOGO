@@ -6,7 +6,7 @@ ODIR=obj
 BDIR=bin
 
 LIBS=-lm
-TESTS=tst/BASIC.logo tst/FLOAT.logo tst/PEN.logo tst/MANY-TESTS.logo tst/FLOWER.logo
+TESTS=$(wildcard tst/*.logo)
 
 %.c: %.y
 %.c: %.l
@@ -42,7 +42,7 @@ $(BDIR)/test_logo: $(TST_LOGO)
 	@gcc -o $@ $^ $(CFLAGS) $(LIBS)
 	@echo ' Created'
 
-$(BDIR)/test_lexer: $(TST_LEX)
+$(BDIR)/logo: $(TST_LEX)
 	@echo -n 'Link all for a Lexer ! ...'
 	@gcc -o $@ $^ $(CFLAGS) $(LIBS)
 	@echo ' Created'
@@ -55,10 +55,14 @@ clean:
 	@rm -f src/*.tab.c src/*.yy.c src/logo.tab.h
 	@rm -f tst/*.svg
 
-test: clean $(BDIR)/test_lexer
-	@ echo -n "Testing "
-	@ for i in $(TESTS); do \
-	    echo -n '.';\
-	    $(BDIR)/test_lexer < $$i > $$i.svg;\
+test: clean $(BDIR)/logo
+	@ echo "Testing "
+	@ for i in tst/*; do \
+	    scripts/compile.sh $$i "out/`basename $$i .logo`.svg";\
 	done
 	@ echo '  Ended !'
+
+etape1: clean $(BDIR)/test_logo
+	@ $(BDIR)/test_logo
+
+etape3: test
