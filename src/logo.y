@@ -18,6 +18,8 @@ int mallocatedProgs = 7;
     #include "logo.h"
 }
 
+%destructor { free($$); } NAME
+
 %union {
   NODE* tVal;
   int iVal;
@@ -48,7 +50,6 @@ PROG :
                 add_node($1, $2);
                 $$ = $1;
             } else if(instruction == NULL){
-		free_prog($1);
                 $$ = $2;
                 instruction = $$;
             } else {
@@ -154,13 +155,17 @@ int yyerror(char *s) {
 }
 
 int main(void) {
+	int i=0;
     prog_names = malloc(mallocatedProgs*sizeof(char*));
     programmes = malloc(mallocatedProgs*sizeof(PROG));
+	for(i=0; i<mallocatedProgs;i++){
+			(*(prog_names+i)) = NULL;
+			(*(programmes+i)) = NULL;
+	}
 	yyparse();
 	if(currentProg!=-1)
 	    yyerror("Command declaration is not ended!");
 	print_svg(instruction);
-	int i=0;
 	for(i=0; i<mallocatedProgs;i++){
 		if(*(prog_names+i)!=NULL)
 			free(*(prog_names+i));
@@ -171,6 +176,7 @@ int main(void) {
 	}
 	free(prog_names);
 	free(programmes);
-	free_prog(instruction);
+	if(instruction!=NULL)
+	    free_prog(instruction);
 	return 0;
 }
